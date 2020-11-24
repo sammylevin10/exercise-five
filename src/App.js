@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Route, BrowserRouter as Router, Redirect } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -22,15 +22,67 @@ const firebaseConfig = {
 };
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+  // const [userInformation, setUserInformation] = useState();
+
+  // Ensure app is initialized when it is ready
+  useEffect(() => {
+    // If there are no firebase apps, initialize the app
+    if (!firebase.apps.length) {
+      // Initializes firebase
+      firebase.initializeApp(firebaseConfig);
+    }
+  }, [firebaseConfig]);
+
+  // Function for logging in
+  function LoginFunction(e) {
+    // This is what you will run when you want to log in
+    e.preventDefault();
+    const email = e.currentTarget.loginEmail.value;
+    const password = e.currentTarget.loginPassword.value;
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(function (response) {
+        console.log("Login response", response);
+        setLoggedIn(true);
+      })
+      .catch(function (error) {
+        console.log("Login error", error);
+      });
+  }
+  // Function for logging out
+  function LogoutFunction(e) {
+    // Function to run when you want to log out
+  }
+  // Function for creating an account
+  function CreateAccountFunction(e) {
+    e.preventDefault();
+    const email = e.currentTarget.createEmail.value;
+    const password = e.currentTarget.createPassword.value;
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(function (response) {
+        console.log("Valid account created for", email, response);
+        setLoggedIn(true);
+      })
+      .catch(function (error) {
+        console.log("Account Creation Failed", error);
+      });
+  }
+
+  console.log({ loggedIn });
   return (
     <div className="App">
-      <Header />
+      <Header loggedIn={loggedIn} LogoutFunction={LogoutFunction} />
       <Router>
         <Route exact path="/login">
-          <Login />
+          <Login LoginFunction={LoginFunction} />
         </Route>
         <Route exact path="/create-account">
-          <CreateAccount />
+          <CreateAccount CreateAccountFunction={CreateAccountFunction} />
         </Route>
         <Route exact path="/">
           <UserProfile />
