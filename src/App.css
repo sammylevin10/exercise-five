@@ -1,4 +1,6 @@
 .App {
+  max-width: 1040px;
+  margin: 0 auto;
 }
 
 header nav {
@@ -10,6 +12,22 @@ header nav {
 
 header nav a {
   color: black;
+  cursor: pointer;
   display: block;
   margin: 10px;
+  text-decoration: underline;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.SignupForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.SignupForm input,
+.SignupForm button {
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 30px;
 }
